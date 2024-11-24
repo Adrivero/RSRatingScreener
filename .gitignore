@@ -12,7 +12,7 @@
 .idea/**/aws.xml
 
 #Eliminate pycache folder
-**/__pycache__
+.idea/**/__pycache__
 
 # Generated files
 .idea/**/contentModel.xml
