@@ -5,7 +5,6 @@ import requests
 #It is necessary to change maxTableNumber according to the number of pages the thable has when you visit:
 #https://stockanalysis.com/list/nasdaq-stocks/ in order to retrieve the data correctly.
 def getNasdaqStocks(url = "https://api.stockanalysis.com/api/screener/s/f",maxTableNumber=7):
-    response=[]
     responseJson=[]
     stocklist = pd.DataFrame()
     for i in range(1,maxTableNumber+1):
@@ -36,7 +35,6 @@ def getNasdaqStocks(url = "https://api.stockanalysis.com/api/screener/s/f",maxTa
 #It is necessary to change maxTableNumber according to the number of pages the thable has when you visit:
 #https://stockanalysis.com/list/nyse-stocks/ in order to retrieve the data correctly.
 def getNyseStocks(url="https://api.stockanalysis.com/api/screener/s/f",maxTableNumber=4):
-    response = []
     responseJson = []
     stocklist = pd.DataFrame()
     for i in range(1, maxTableNumber+1):
@@ -67,6 +65,7 @@ def getNyseStocks(url="https://api.stockanalysis.com/api/screener/s/f",maxTableN
 
 #Returns data frame with the information of all US stocks (excluding minor exchanges) as a data frame
 #If resetIndex parameter is False, it won't reset indexes. [0,1,....,2000,0,1,....3000] (First NYSE then NASDAQ)
+#TODO add column to each dataframe (nyse and nasdaq) with the exchange name
 def get_US_Stocks(resetIndex=True):
     df = pd.DataFrame()
     if resetIndex:
