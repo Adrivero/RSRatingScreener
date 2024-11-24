@@ -11,6 +11,9 @@
 # AWS User-specific
 .idea/**/aws.xml
 
+#Eliminate pycache folder
+**/__pycache__
+
 # Generated files
 .idea/**/contentModel.xml
 
