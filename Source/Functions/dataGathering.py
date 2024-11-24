@@ -29,6 +29,7 @@ def getNasdaqStocks(url = "https://api.stockanalysis.com/api/screener/s/f",maxTa
 
             stocklist = pd.concat([stocklist,df],ignore_index=True)
         else: print(f"Error on Nasdaq Stocks request. Request with parameter- p:{i}")
+        stocklist["Exchange"]="Nasdaq"
     return stocklist
 
 #Returns data frame with information about all SPY Stocks
@@ -60,18 +61,23 @@ def getNyseStocks(url="https://api.stockanalysis.com/api/screener/s/f",maxTableN
 
             stocklist = pd.concat([stocklist, df], ignore_index=True)
         else:
-            print(f"Error on SPX Stocks request. Request with parameter- p:{i}")
+            print(f"Error on NYSE Stocks request. Request with parameter- p:{i}")
+            
+        stocklist["Exchange"]="Nyse"
     return stocklist
 
 #Returns data frame with the information of all US stocks (excluding minor exchanges) as a data frame
 #If resetIndex parameter is False, it won't reset indexes. [0,1,....,2000,0,1,....3000] (First NYSE then NASDAQ)
-#TODO add column to each dataframe (nyse and nasdaq) with the exchange name
-def get_US_Stocks(resetIndex=True):
+def get_raw_US_Stocks(resetIndex=True):
     df = pd.DataFrame()
     if resetIndex:
         df = pd.concat([getNyseStocks(),getNasdaqStocks()],ignore_index=True)
+        df.rename(columns={"s":"Ticker"}, inplace=True)
+        print(df)
     else:
         df = pd.concat([getNyseStocks(), getNasdaqStocks()], ignore_index=False)
+        df.rename(columns={"s":"Ticker"}, inplace=True)
 
     return df
 
+#TODO make a function that treats the data frame eliminatign null values on revenue and in other columns?
