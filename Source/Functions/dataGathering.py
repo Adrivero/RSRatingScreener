@@ -73,11 +73,14 @@ def get_raw_US_Stocks(resetIndex=True):
     if resetIndex:
         df = pd.concat([getNyseStocks(),getNasdaqStocks()],ignore_index=True)
         df.rename(columns={"s":"Ticker"}, inplace=True)
-        print(df)
     else:
         df = pd.concat([getNyseStocks(), getNasdaqStocks()], ignore_index=False)
         df.rename(columns={"s":"Ticker"}, inplace=True)
 
+    df.rename(columns={"n":"Name"}, inplace=True)
+    df.fillna(0, inplace=True)
+    df.drop(columns=["no"],inplace=True)
     return df
 
-#TODO make a function that treats the data frame eliminatign null values on revenue and in other columns?
+
+#TODO use df.describe(include="all")
