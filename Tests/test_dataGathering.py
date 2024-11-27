@@ -41,4 +41,20 @@ class TestNasdaqAndSPX(unittest.TestCase):
               f"inside the get_raw_US_Stocks()")
         self.assertTrue(y,msg2)
 
+    def test_getCurrentPrice(self):
+        #Tests if with amazon stock, the value of the currentPrice is a non-null float
+        x = getCurrentPrice("AMZN")
+        if x == 0:
+            self.assertEqual(x,0,"Error!. Actual stock price can't be zero")
 
+        x = isinstance(x, float)
+        self.assertTrue(x,"Error! Stock price is not a float value")
+
+    def test_getStockPerformance(self):
+
+        x = getStockPerformance("AMZN", "1y")
+        if x ==0:
+            self.assertEqual(x, 0, "Error!. Stock performance can't be zero")
+        x = isinstance(x, float)
+
+        self.assertTrue(x, "Error! Stock performance is not a float value")

@@ -1,5 +1,8 @@
 import pandas as pd
 import requests
+import yfinance as yf
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 #Returns data frame with information about all Nasdaq Stocks
 #It is necessary to change maxTableNumber according to the number of pages the thable has when you visit:
@@ -82,5 +85,56 @@ def get_raw_US_Stocks(resetIndex=True):
     df.drop(columns=["no"],inplace=True)
     return df
 
+#Returns a list with the Ticker of all stocks of the USA
+def  getTickersOfAllStocks():
+    df = get_raw_US_Stocks()
+    df_filtered = df[~df['Ticker'].str.contains('\\.', na=False)]
 
-#TODO use df.describe(include="all")
+    return df_filtered["Ticker"].tolist()
+
+#Uses yahoo finance api to get current stock price. Returns float value
+def getCurrentPrice(ticker):
+    try:
+        stock_data = yf.Ticker(ticker)
+        currentPrice = stock_data.history(period="1d")["Close"]
+        return float(currentPrice.iloc[0])
+    except Exception as nonFoundTicker:
+        print(f"Error, Ticker: {ticker} not found in yfinance in getCurrentPrice")
+
+
+
+
+#Gets stock performance for a certain period
+#period= "3mo" | "6mo" | "9mo" | "1y" |
+def getStockPerformance(ticker, time):
+    try:
+        stock_data = yf.Ticker(ticker)
+    except Exception as nonFoundTicker:
+        print(f"Error, Ticker: {ticker} not found in yfinance in getStockPerformance")
+
+    #We cannot get the performance for 9 months the same way we get the others as yfinance doesn't support 9mo interval
+    if time=="9mo":
+        currentDate = datetime.today()
+        #To calculate the date 9 months ago we use relative delta:
+        nineMoAgoDate=currentDate-relativedelta(months=9)
+
+        #Transform it from datetime to string
+        nineMoAgoDate=nineMoAgoDate.strftime('%Y-%m-%d')
+
+        history= stock_data.history(start=nineMoAgoDate, end=currentDate.strftime('%Y-%m-%d'))
+        nineMoPrice = history['Close'].iloc[0]
+        todayPrice = history['Close'].iloc[-1]
+        performance = todayPrice/nineMoPrice
+
+        return float(performance)
+
+
+    priceInLastPeriod = stock_data.history(time)["Close"]
+    #We need to transform it into a float value
+    priceInLastPeriod = float(priceInLastPeriod.iloc[0])
+
+    performance = getCurrentPrice(ticker)/priceInLastPeriod
+
+    return float(performance)
+
+
